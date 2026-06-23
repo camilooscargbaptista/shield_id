@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+ROOT="$(git rev-parse --show-toplevel)"
+MD=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(md|json)$' || true)
+[ -n "$MD" ] && python3 "$ROOT/scripts/guards/metric_honesty.py" --require-cross-generator $MD || true
+python3 "$ROOT/scripts/guards/index_drift.py"
+echo "pre-push gates: OK"

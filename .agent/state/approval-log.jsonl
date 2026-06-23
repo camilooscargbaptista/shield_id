@@ -1,0 +1,19 @@
+{"ts":"2026-06-17T00:00:00Z","event":"framework_initialized","version":"1.0.0","by":"camilo"}
+{"ts": "2026-06-18T02:51:40Z", "event": "experiment_started", "experiment": "demo-detector", "type": "experiment"}
+{"ts": "2026-06-18T02:51:40Z", "event": "step_approved", "experiment": "demo-detector", "step": "kickoff", "approver": "camilo"}
+{"ts": "2026-06-18T02:51:40Z", "event": "step_approved", "experiment": "demo-detector", "step": "spec", "approver": "camilo"}
+{"ts": "2026-06-18T02:51:40Z", "event": "step_approved", "experiment": "demo-detector", "step": "c4", "approver": "camilo"}
+{"ts": "2026-06-18T02:51:40Z", "event": "step_approved", "experiment": "demo-detector", "step": "eval-plan", "approver": "camilo"}
+{"ts": "2026-06-18T13:06:35Z", "event": "experiment_started", "experiment": "eval-harness", "type": "experiment"}
+{"ts": "2026-06-18T13:06:35Z", "event": "step_approved", "experiment": "eval-harness", "step": "kickoff", "approver": "camilo"}
+{"ts": "2026-06-18T13:06:35Z", "event": "step_approved", "experiment": "eval-harness", "step": "spec", "approver": "camilo"}
+{"ts": "2026-06-18T13:06:35Z", "event": "step_approved", "experiment": "eval-harness", "step": "c4", "approver": "camilo"}
+{"ts": "2026-06-18T13:06:35Z", "event": "step_approved", "experiment": "eval-harness", "step": "eval-plan", "approver": "camilo"}
+{"ts": "2026-06-18T13:12:39Z", "event": "step_approved", "experiment": "eval-harness", "step": "data", "approver": "camilo"}
+{"ts": "2026-06-18T13:12:39Z", "event": "step_approved", "experiment": "eval-harness", "step": "implementation", "approver": "camilo"}
+{"ts": "2026-06-18T13:12:39Z", "event": "step_approved", "experiment": "eval-harness", "step": "eval", "approver": "camilo"}
+{"ts":"2026-06-18T13:12:39Z","event":"epic_milestone","epic":"EPIC-EVAL-HARNESS","detail":"US-001 built + independently certified PASS_WITH_WARNINGS; LC-004 guard fix applied"}
+{"ts":"2026-06-18T18:28:00Z","event":"epic_milestone","epic":"EPIC-EVAL-HARNESS","detail":"US-002 fairness built + independently certified PASS"}
+{"ts":"2026-06-18T18:33:38Z","event":"epic_milestone","epic":"EPIC-REDTEAM-DATASET","detail":"pipeline+splits+datasheet+baseline built (procedural synthetic); WS-B loop end-to-end; guards green; 5/5 tests"}
+{"ts":"2026-06-23T00:02:38Z","event":"epic_milestone","epic":"EPIC-DETECTION-API","detail":"US-007 real LLM-text detector code written (transformers fine-tune); compiles; guards green; training pending GPU (D11)"}
+{"ts":"2026-06-23T00:22:07Z","event":"infra","detail":"CLI orchestration layer (.agent/cli CONTROL+tasks + .claude/commands orchestrate/next/status)"}

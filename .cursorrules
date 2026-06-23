@@ -1,0 +1,5 @@
+# SHIELD-ID — condensed mirror of .agent (full truth in AGENTS.md + .agent/)
+# Read AGENTS.md first. The 5 invariants: no raw biometrics · no real PII · no metric without
+# reproducible artifact · cross-generator mandatory · metrics are targets (report what you measure).
+# Builder never validates own metrics (M5/D4 — eval-independent, isolated). src/ edits are gated:
+# run scripts/agent/start_experiment.py then get gates /approved. Enforcement: scripts/guards/*.py.

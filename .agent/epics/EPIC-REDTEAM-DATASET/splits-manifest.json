@@ -1,0 +1,11 @@
+{
+  "train_generators": [
+    "A",
+    "B"
+  ],
+  "held_out_generator": "C",
+  "seed": 42,
+  "n_per_generator": 500,
+  "modality": "document",
+  "control_set": true
+}

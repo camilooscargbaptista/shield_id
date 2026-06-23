@@ -1,0 +1,45 @@
+{
+  "name": "SHIELD-ID Red-Team Document Dataset (procedural placeholder v0)",
+  "honesty_note": "Procedural synthetic stand-ins, NOT frontier-generator deepfakes. For pipeline/harness validation.",
+  "modality": "document (D9)",
+  "real_pii": false,
+  "synthetic_only": true,
+  "generators": {
+    "train": [
+      "A",
+      "B"
+    ],
+    "held_out": "C",
+    "profiles": {
+      "A": 0.75,
+      "B": 0.7,
+      "C": 0.45
+    }
+  },
+  "composition": {
+    "attacks": 1500,
+    "legitimate_control": 500
+  },
+  "demographic_distribution": {
+    "seg-1": {
+      "count": 781,
+      "share": 0.3905
+    },
+    "seg-2": {
+      "count": 631,
+      "share": 0.3155
+    },
+    "seg-3": {
+      "count": 388,
+      "share": 0.194
+    },
+    "seg-4": {
+      "count": 200,
+      "share": 0.1
+    }
+  },
+  "labeling": "per sample: generator, label, segment, modality, difficulty_tier",
+  "seed": 42,
+  "license": "permissive open-source (intended)",
+  "limitations": "artifacts are procedural, not real generative-model fingerprints; replace with real generators (GPT-4o/Stable Diffusion/ElevenLabs) under EPIC-DETECTION-API + compute."
+}

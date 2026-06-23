@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+ROOT="$(git rev-parse --show-toplevel)"
+FILES=$(git diff --cached --name-only --diff-filter=ACM || true)
+python3 "$ROOT/scripts/guards/no_raw_biometric.py" $FILES
+python3 "$ROOT/scripts/guards/no_real_pii.py" $FILES
+python3 "$ROOT/scripts/guards/secret_scan.py" $FILES
+python3 "$ROOT/scripts/guards/no_hardcoded.py" $FILES
+echo "pre-commit gates: OK"

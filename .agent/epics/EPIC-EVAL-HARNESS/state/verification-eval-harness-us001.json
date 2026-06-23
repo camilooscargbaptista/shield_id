@@ -1,0 +1,61 @@
+{
+  "verdict": "PASS_WITH_WARNINGS",
+  "epic": "EPIC-EVAL-HARNESS",
+  "user_story": "US-001-cross-generator-protocol",
+  "gate": "post-eval-harness-validation",
+  "agent": "eval-independent",
+  "session": "isolated (M5 / D4)",
+  "date": "2026-06-18",
+  "criteria_checked": [
+    {
+      "criterion": "Held-out generator C loader REFUSES a C-in-train manifest (circularity guard, rule 05/I4, T-001-a)",
+      "status": "pass",
+      "evidence": "SplitsManifest(['A','C'],'C',42) raised CrossGeneratorViolation; load_manifest({train:['A','B','C'],held_out:'C'}) also raised. Re-run independently, not via stored test."
+    },
+    {
+      "criterion": "Harness emits P/R@FPR + CI + ROC/PR curve + robustness delta on synthetic fixtures (T-001-b)",
+      "status": "pass",
+      "evidence": "On a toy fixture with C harder than {A,B}: headline='cross-generator', in-distribution recall 0.9983, cross-generator recall 0.1633, CI95 (0.1142,0.2724), robustness_delta_pp -83.5, ROC curve 21 points. Negative control (C as easy as A,B) gave delta +0.17pp -> delta tracks reality, not a hardcoded penalty."
+    },
+    {
+      "criterion": "Reproducible from config+seed; identical curves on re-run (T-001-c)",
+      "status": "pass",
+      "evidence": "Two runs with seed 42 / bootstrap_n 500 produced byte-identical JSON reports (CI and delta identical). Seed and fpr_target live in EvalConfig (config.py), not in logic (rule 02/32)."
+    },
+    {
+      "criterion": "Disaggregated FPR table + significance test (US-002)",
+      "status": "out_of_scope",
+      "evidence": "US-002 is a separate story (fairness-auditor). Not part of US-001 artifacts; not certified here. Gate item belongs to the fairness-auditor leg of this gate."
+    },
+    {
+      "criterion": "metric_honesty.py --require-cross-generator BLOCKS an in-distribution-only report",
+      "status": "pass",
+      "evidence": "Dishonest report ('96% precision', no cross-generator/repro) -> exit 1 (BLOCKED, two reasons). Honest cross-generator+seed report -> exit 0 (OK)."
+    },
+    {
+      "criterion": "eval-independent correctly FAILs an in-distribution-only report (credibility firewall)",
+      "status": "pass",
+      "evidence": "Demonstrated: guard exits 1 on the dishonest file; this agent treats any real in-distribution headline as FAIL. Adversarial repo sweep found NO real SHIELD-ID metric claim (only targets / teaching examples)."
+    },
+    {
+      "criterion": "No raw biometric / PII in the eval package (DoD)",
+      "status": "pass",
+      "evidence": "eval/ contains only splits.py, metrics.py, cross_generator.py, __init__.py. No .wav/.npy/.jpg/.csv biometric artifacts found."
+    },
+    {
+      "criterion": "Camilo explicit /approved",
+      "status": "pending_human",
+      "evidence": "Human sign-off is outside this isolated agent's authority; flagged for orchestrator. Technical criteria are met."
+    }
+  ],
+  "cross_generator_enforced": true,
+  "reproducible": true,
+  "raw_biometric_detected": false,
+  "real_shield_id_metric_claim_detected": false,
+  "warnings": [
+    "metric_honesty.py has a bypass: the heuristic 'if \"target\" not in low' whitelists the ENTIRE file when the substring 'target' appears anywhere. A dishonest report ('96% accuracy. Our target is X.') passed with exit 0. Recommend tightening: only treat a number as a target when 'target'/'aspirational' is adjacent to that number, not anywhere in the file. This is a guard-robustness gap, NOT a defect in the US-001 harness artifacts under certification.",
+    "pytest is not installed in the verification environment; the repo's own test file could not be run via pytest. Mitigated: this agent executed all four test functions directly (4/4 pass) AND re-derived every behavior with an independent script, so certification does not depend on the stored tests.",
+    "robustness_delta_pp is reported as a structured field and is correct, but the harness does not itself render a human 'headline string'; downstream report/deck generation must surface the cross-generator number + delta + curve (the report rendering layer is not in this US-001 package)."
+  ],
+  "notes": "Verdict by INSPECTION + INDEPENDENT RE-RUN (no prior run trusted). The harness correctly (1) refuses the circularity trap at manifest construction and on the dict-loader path; (2) refuses a headline when the held-out generator has no eval data (NoCrossGeneratorError); (3) makes the cross-generator recall + robustness delta + CI + ROC curve the headline, never an in-distribution point; (4) is config-driven and deterministic under seed. The harness EXPOSES the circularity gap (-83.5pp on a hard unseen C) rather than hiding it. No trained detector exists and none is claimed — correct for this gate. Overall PASS_WITH_WARNINGS: the artifacts under certification are sound; the single actionable warning is the metric_honesty.py 'target' substring bypass, which weakens (but does not nullify) honesty enforcement and should be fixed before the EPIC-DETECTION-API gate where real numbers will appear."
+}

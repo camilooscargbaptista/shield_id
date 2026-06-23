@@ -1,0 +1,7 @@
+# Layer-1 text detector — install on the GPU box (CUDA). Pin versions in your environment.
+torch>=2.2
+transformers>=4.40
+datasets>=2.19
+scikit-learn>=1.4
+accelerate>=0.30
+numpy>=1.26

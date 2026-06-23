@@ -1,0 +1,9 @@
+# All thresholds/paths live here (rule 32 — no hardcoded defaults in code)
+detection:
+  threshold: 0.5          # decision cutoff (config-driven, never inline)
+  model_base: "<fine-tuned-from>"   # rule 05: never from scratch
+eval:
+  fpr_target: 0.001       # FPR target (D5: a target to TEST, not a promise)
+  cross_generator: true   # mandatory (rule 05 / D8)
+  held_out_generator: "C"
+seed: 42                  # determinism (rule 02)

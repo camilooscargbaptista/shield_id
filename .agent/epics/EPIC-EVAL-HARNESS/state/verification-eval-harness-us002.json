@@ -1,0 +1,52 @@
+{
+  "verdict": "PASS",
+  "user_story": "US-002-disaggregated-fairness",
+  "epic": "EPIC-EVAL-HARNESS",
+  "governing_rule": "rule-06-fairness",
+  "gate": "FAIRNESS-GATE",
+  "certified_by": "fairness-auditor / eval-independent (isolated session, M5/D4)",
+  "certified_on": "2026-06-18",
+  "primary_is_disaggregated": true,
+  "significance_test_present": true,
+  "blocks_on_disparity": true,
+  "hardcoded_defaults": false,
+  "criteria": {
+    "a_disaggregated_primary_global_secondary": "PASS — audit_parity returns primary_metric='disaggregated_fpr' and global_fpr_secondary; per-segment table is the headline.",
+    "b_real_significance_test": "PASS — two_proportion_p() is a genuine two-proportion z-test (pooled SE, normal CDF via erf) returning a p-value; each segment tested vs rest, p_value_vs_rest reported per segment.",
+    "c_block_on_significant_gap": "PASS — verdict='BLOCK' iff any segment p<alpha. Confirmed on disparate fixture (A,B=0.01, C=0.20): verdict=BLOCK, all flagged, global FPR=6.83% would look passable while C FPR=19.2% (the rule-06 hiding-the-gap point demonstrated).",
+    "d_thresholds_alpha_are_parameters": "PASS — signature inspection: threshold and alpha have NO defaults in any function; no_hardcoded.py guard exits 0."
+  },
+  "evidence": {
+    "disparate_fixture": {
+      "input": "A=0.01, B=0.01, C=0.20; ~400 legit + 400 attack per segment; audit_parity(threshold=0.5, alpha=0.01)",
+      "global_fpr_secondary": 0.0683,
+      "per_segment_fpr": {"A": 0.005, "B": 0.0075, "C": 0.1925},
+      "p_value_vs_rest": {"A": 0.0, "B": 0.0, "C": 0.0},
+      "max_gap_pp": 18.75,
+      "significant_segments": ["A", "B", "C"],
+      "verdict": "BLOCK",
+      "rule06_point": "Global FPR 6.83% could look acceptable to a casual eye while segment C is 19.2% — disaggregation catches the disparity the average hides."
+    },
+    "balanced_fixture": {
+      "input": "A=0.02, B=0.02, C=0.02; same shape; alpha=0.01",
+      "global_fpr_secondary": 0.015,
+      "per_segment_fpr": {"A": 0.0175, "B": 0.01, "C": 0.0175},
+      "p_value_vs_rest": {"A": 0.6144, "B": 0.3137, "C": 0.6144},
+      "max_gap_pp": 0.75,
+      "significant_segments": [],
+      "verdict": "PASS"
+    },
+    "ztest_sanity": {
+      "obvious_disparity_80of400_vs_8of800": 0.0,
+      "null_equal_2pct_vs_2pct": 1.0
+    },
+    "no_hardcoded_guard": "scripts/guards/no_hardcoded.py src/shield_id/eval/fairness.py -> 'no_hardcoded: OK', exit 0",
+    "bundled_tests": "3/3 pass when run as plain asserts (pytest not installed in sandbox; logic re-run independently)"
+  },
+  "warnings": [
+    "Scope of US-002 partially out of this code unit: rule 06 / FAIRNESS-GATE also require (1) per-segment ACCURACY alongside FPR, (2) the dataset's demographic-distribution validator (T-002-b, data-redteam, rule 03), and (3) human-review/contestation escalation for rejections. fairness.py correctly delivers the PRIMARY disaggregated-FPR + significance contract (T-002-a); the remaining gate items are separate deliverables and are NOT certified here.",
+    "audit_parity tests each segment vs the pooled rest. With >2 segments and no multiple-comparison correction, family-wise alpha inflates slightly. Not a defect for the US-002 contract (alpha is an explicit parameter and BLOCK on any disparity is conservative/fail-safe), but a future hardening note.",
+    "fpr()/disaggregated_fpr() return 0.0 FPR for an empty segment (n_legit=0); two_proportion_p returns 1.0 (non-significant) for empty groups. A segment with zero legit samples would be silently treated as parity-OK. Acceptable given rule-03 dataset validation is a prerequisite, but worth surfacing."
+  ],
+  "notes": "Independent certification (isolated session; did not author the code). All four FAIL-triggering conditions were checked and NONE fired: global FPR is explicitly secondary (not primary); a real two-proportion z-test with p-value is present; BLOCK fires on disparity (verified on synthetic fixture where the global average looked passable while segment C was 19.2%); thresholds/alpha are mandatory parameters with no defaults and no_hardcoded.py exits 0. Verdict PASS for the T-002-a contract. Warnings are about adjacent gate scope (accuracy table, dataset-validity, human escalation) and minor statistical hardening, none of which are defects in the unit under test."
+}
