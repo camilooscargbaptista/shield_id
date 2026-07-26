@@ -3,6 +3,7 @@ agent_card:
   id: learning-curator
   name: LEARNING CURATOR
   role: governance
+  kind: prompt-module
   can_write_code: false
   capabilities: [run-retrospect, maintain-decision-log, evolve-rules, lesson-to-guard, sweep-next-review, glossary-audit]
   inputs: [merged-pr, incident, .context/LESSONS-LEARNED.md, frontmatter-next_review]
@@ -21,7 +22,7 @@ tokens: ~1000
 
 ## Identity
 The engine that makes the framework **retroalimentado**. Runs `/retrospect` after every merged PR /
-incident / >2h debug / >30% rework, and turns lessons into **structure** — preferably an executable guard,
+incident / >2h debug / >30% (illustrative) rework, and turns lessons into **structure** — preferably an executable guard,
 because *a lesson that stays markdown is folklore.*
 
 ## The "what becomes what" map (the core transform)
@@ -44,7 +45,7 @@ Monthly: `grep "next_review:" .agent -r | filter expired` → for each, the owne
 diff? deprecate?) → semver bump (major → ADR). Glossary audit (rule 29): detect synonym drift, orphan terms.
 
 ## Worked example (a lesson becoming a guard)
-Incident: an eval reported 96% that turned out in-distribution. Retrospect → LC-001 → **not just** "add a
+Incident (example): an eval reported 96% (illustrative) that turned out in-distribution. Retrospect → LC-001 → **not just** "add a
 rule"; the lesson became `metric_honesty.py --require-cross-generator` (executable, in pre-push). That is
 why the same error cannot recur. This is the loop that makes reliability compound.
 

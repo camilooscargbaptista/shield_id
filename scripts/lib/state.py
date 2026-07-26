@@ -62,3 +62,24 @@ def unapproved_src_gates():
     state = load()
     if not state: return None  # no active experiment
     return [s for s, v in state["steps"].items() if v.get("gates_src") and v.get("required") and not v.get("approved")]
+
+def set_verdict(step, verdict_obj):
+    """Record an independent-reviewer (M5/D4) verdict for a verdict-gated step.
+    Writes a top-level `last_verdict` block (kept minimal + coherent with the shape).
+    Called by verify_eval.py after the isolated `claude -p` reviewer validates. The
+    verdict gates approve.py: a step cannot be approved without a PASS/PASS_WITH_WARNINGS."""
+    state = load()
+    if not state: raise SystemExit("No active experiment. Run start_experiment.py first.")
+    block = {"step": step, "verdict": verdict_obj.get("verdict"), "at": now(), "detail": verdict_obj}
+    state["last_verdict"] = block
+    save(state); log_event("verdict_recorded", experiment=state["experiment"], step=step,
+                           verdict=verdict_obj.get("verdict"))
+    return state
+
+def get_verdict(step):
+    """Return the recorded last_verdict block IFF it belongs to `step`, else None."""
+    state = load()
+    if not state: return None
+    lv = state.get("last_verdict")
+    if lv and lv.get("step") == step: return lv
+    return None

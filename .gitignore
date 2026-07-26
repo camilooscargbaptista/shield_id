@@ -12,6 +12,8 @@ dist/
 build/
 # Agent runtime state: working copy is ephemeral; truth lives in PRs + CI + approval-log.jsonl
 .agent/state/current-experiment.json
+# PORT-3 generic-runner trace: runtime-ephemeral per-run log (real cost/duration); not versioned
+.agent/state/trace.jsonl
 # Data & model artifacts never committed (no raw biometrics, no real PII — rules 03/04)
 data/raw/
 data/biometric/

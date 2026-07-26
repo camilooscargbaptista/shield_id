@@ -3,6 +3,7 @@ agent_card:
   id: privacy-ethics-review
   name: PRIVACY & ETHICS REVIEW
   role: validation
+  kind: prompt-module
   can_write_code: false
   capabilities: [detect-raw-biometric, detect-pii, lgpd-gdpr-review, non-retention-test-check, ethics-gate]
   inputs: [diff, data-pipeline, schema, rules/04-privacy-biometrics.md, rules/03-data-governance.md]

@@ -3,6 +3,7 @@ agent_card:
   id: data-redteam
   name: DATA RED-TEAM BUILDER
   role: builder
+  kind: prompt-module
   can_write_code: true
   capabilities: [generate-synthetic-attacks, build-cross-generator-splits, write-datasheet, validate-demographic-distribution]
   inputs: [user-story, rules/03-data-governance.md, skills/generate-redteam-batch]

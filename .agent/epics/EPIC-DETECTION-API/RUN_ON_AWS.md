@@ -13,7 +13,7 @@
 |---|---|---|---|
 | **g4dn.xlarge** | T4 16GB | ~0,53 | **padrão** — sobra pro roberta-base |
 | g5.xlarge | A10G 24GB | ~1,01 | se quiser mais rápido / modelo maior |
-> **Spot instance** corta ~60–70% (use se não se importar de poder ser interrompida). Disco: **100 GB gp3**.
+> **Spot instance** corta ~60–70% (estimate; use se não se importar de poder ser interrompida). Disco: **100 GB gp3**.
 > AMI: **"Deep Learning OSS Nvidia Driver AMI (Ubuntu)"** — já vem CUDA + PyTorch.
 
 ## 2A. Subir via Console (cliques)

@@ -2,24 +2,65 @@
   "model": "opus",
   "hooks": {
     "SessionStart": [
-      { "hooks": [ { "type": "command", "command": ".claude/hooks/session-start-cost-routing.sh" } ] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/session-start-cost-routing.sh"
+          }
+        ]
+      }
     ],
     "UserPromptSubmit": [
-      { "matcher": "^/(approved|start-experiment|status)",
-        "hooks": [ { "type": "command", "command": ".claude/hooks/user-prompt-router.sh" } ] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/user-prompt-router.sh"
+          }
+        ]
+      }
     ],
     "PreToolUse": [
-      { "matcher": "Edit|Write|MultiEdit",
-        "hooks": [ { "type": "command", "command": ".claude/hooks/guard-src-edits.sh" } ] },
-      { "matcher": "Bash",
-        "hooks": [ { "type": "command", "command": ".claude/hooks/guard-bash-bypass.sh" } ] }
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/guard-src-edits.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/guard-bash-bypass.sh"
+          }
+        ]
+      }
     ],
     "PostToolUse": [
-      { "matcher": "Bash",
-        "hooks": [ { "type": "command", "command": ".claude/hooks/post-commit-verify.sh" } ] }
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-commit-verify.sh"
+          }
+        ]
+      }
     ],
     "Stop": [
-      { "hooks": [ { "type": "command", "command": ".claude/hooks/stop-compliance.sh" } ] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/stop-compliance.sh"
+          }
+        ]
+      }
     ]
   }
 }

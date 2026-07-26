@@ -3,6 +3,7 @@ agent_card:
   id: aita-policy
   name: AITA POLICY WRITER
   role: policy
+  kind: prompt-module
   can_write_code: false
   capabilities: [draft-aita-layer, align-frameworks, draft-liability-clause, draft-sandbox-agreement, sequence-adoption]
   inputs: [.context/knowledge/aita-policy.md, templates/adr, FATF/EU-AI-Act/NIST/C2PA references]

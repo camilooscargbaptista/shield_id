@@ -3,6 +3,7 @@ agent_card:
   id: detection-ml
   name: DETECTION-ML BUILDER
   role: builder
+  kind: prompt-module
   can_write_code: true
   capabilities: [fine-tune-detector, build-layer2-gnn, build-detection-api, derive-feature-vectors]
   inputs: [user-story, eval-plan, .context/knowledge/layer1-detection.md, .context/knowledge/layer2-behavioral.md, config.yaml]

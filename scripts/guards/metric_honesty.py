@@ -12,8 +12,28 @@ from pathlib import Path
 
 METRIC = re.compile(r"\b\d{2,3}(?:\.\d+)?\s*%")
 # A bare TARGET declaration is exempt ONLY when target/aspirational is adjacent to the number.
-TARGET_ADJ = re.compile(r"(target|aspirational)\W{0,12}\d{2,3}(?:\.\d+)?\s*%"
-                        r"|\d{2,3}(?:\.\d+)?\s*%\W{0,12}(target|aspirational)", re.I)
+# PORT-1.1 (2026-07-21): same tight-adjacency rule extended to pedagogical text —
+# example/illustrative/hypothetical/estimate adjacent to the number marks it as a
+# non-claim (teaching dialogue in .agent/ cards, cost estimates). Window stays 12 chars
+# so a real result cannot be laundered by a distant word (LC-004 rationale).
+EXEMPT_WORDS = r"(?:target|aspirational|example|illustrative|hypothetical|estimate|estimativa|exemplo)"
+TARGET_ADJ = re.compile(EXEMPT_WORDS + r"\W{0,12}\d{2,3}(?:\.\d+)?\s*%"
+                        r"|\d{2,3}(?:\.\d+)?\s*%\W{0,12}" + EXEMPT_WORDS, re.I)
+
+# PORT-1.1 (2026-07-21): policy/pedagogy scope. `.agent/` and `.context/` hold rules,
+# thresholds ("coverage >= 80%") and teaching examples — never measured RESULTS (SSOT:
+# results live in docs/reports + the verification artifacts emitted by verify_eval.py,
+# rule 15). Scanning them produced only false positives, which trains humans to ignore
+# the gate. Everything outside these trees keeps the strict scan.
+PEDAGOGICAL_PREFIXES = (".agent/", ".context/")
+
+
+def _is_pedagogical(path: str) -> bool:
+    norm = path.replace("\\", "/")
+    while norm.startswith("./"):
+        norm = norm[2:]
+    return norm.startswith(PEDAGOGICAL_PREFIXES)
+
 
 def main():
     files = [a for a in sys.argv[1:] if not a.startswith("--")]
@@ -21,6 +41,8 @@ def main():
     for f in files:
         p = Path(f)
         if not p.is_file():
+            continue
+        if _is_pedagogical(f):
             continue
         low = p.read_text(errors="ignore").lower()
         has_cross = ("cross-generator" in low) or ("cross generator" in low)
