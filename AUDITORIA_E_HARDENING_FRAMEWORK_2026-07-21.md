@@ -21,7 +21,7 @@ encontrou 7 problemas reais:
 | 4 | MÉDIO | **`pre-commit` frágil**: `$FILES` sem aspas quebrava com filenames contendo espaço; staging vazio passava silenciosamente. | **CORRIGIDO** |
 | 5 | MÉDIO | **`.claude/settings.json`** com `matcher` em `UserPromptSubmit` — campo não suportado nesse evento (só em hooks de ferramenta); config mentia sobre o comportamento (o filtro real já vive no router script). | **CORRIGIDO** |
 | 6 | MÉDIO | **`guard-bash-bypass.sh` não cobria tampering de `core.hooksPath`** — `git config --unset core.hooksPath` ou `git -c core.hooksPath=/dev/null …` desativaria todos os gates sem ser bloqueado. | **CORRIGIDO** |
-| 7 | MÉDIO | **`metric_honesty` gerava só falso positivo no framework**: ao consertar o pre-push (achado 1), o primeiro scan real flagrou 14 arquivos — todos thresholds de política (`rules/28`: "80%→90% coverage") e exemplos de ensino (fairness: "FPR 0.09%…"), nunca resultados medidos. Falso positivo sistêmico ensina humanos a ignorar o gate. | **CORRIGIDO (escopo pedagógico)** |
+| 7 | MÉDIO | **`metric_honesty` gerava só falso positivo no framework**: ao consertar o pre-push (achado 1), o primeiro scan real flagrou 14 arquivos — todos thresholds de política (`rules/28`, exemplo: "80%→90% coverage") e exemplos de ensino (fairness: "FPR 0.09%…"), nunca resultados medidos. Falso positivo sistêmico ensina humanos a ignorar o gate. | **CORRIGIDO (escopo pedagógico)** |
 
 Achado menor: `trace.jsonl` contém entradas de teste com caminhos `/tmp` (poluição do
 log do PORT-3); já está gitignored — sem ação.
@@ -134,6 +134,6 @@ mesmo commit ou num commit próprio do épico correspondente.
 
 As mesmas correções estruturais de lá (entry points AGENTS.md/CLAUDE.md, versionar
 `.agent/`, corrigir dados falsos do scan, DATABASE-ENGINEER para MongoDB, thresholds
-85%, remover PCI-DSS) continuam pendentes — mapeadas em
+target 85%, remover PCI-DSS) continuam pendentes — mapeadas em
 `credit_analyser/AUDITORIA_ESTRUTURA_AGENT_2026-07-21.md`. Quando for portar, a classe F
 deste selfcheck é reaproveitável quase sem mudança (os caminhos são os mesmos por design).
