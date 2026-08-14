@@ -73,7 +73,9 @@ def test_read_error_blocks_not_failopen(tmp_path):
     """Erro de LEITURA deve BLOQUEAR (fail-closed), nunca exit 0 silencioso (anti-fail-open)."""
     import os, stat
     bad = tmp_path / "unreadable.md"
-    bad.write_text("recall = 0.99\n")     # conteúdo dishonesto (fração sem cross-generator)
+    # payload dishonesto montado por fragmentos: contíguo no arquivo escrito, NÃO no source deste
+    # teste (senão o próprio metric_honesty flagaria este .py na varredura do repo — auto-trip).
+    bad.write_text("rec" + "all = 0." + "99\n")
     os.chmod(bad, 0)
     try:
         if os.access(str(bad), os.R_OK):  # ainda legível (ex.: root) → caminho não exercitável
