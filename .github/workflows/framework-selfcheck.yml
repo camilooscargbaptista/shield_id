@@ -1,0 +1,28 @@
+name: framework-selfcheck
+
+# Fail-closed meta-guard for the .agent/ framework (PORT-1 of EPIC-FRAMEWORK-EVOLUTIONS).
+# Mirrors the pre-push gate so a red selfcheck also blocks in CI.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  framework-selfcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Framework selfcheck (fail-closed)
+        run: python3 scripts/guards/framework_selfcheck.py
+
+      - name: INDEX drift
+        run: python3 scripts/guards/index_drift.py

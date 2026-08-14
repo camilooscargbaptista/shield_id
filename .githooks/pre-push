@@ -1,7 +1,54 @@
 #!/usr/bin/env bash
-set -e
+# pre-push gate — FAIL-CLOSED (PORT-1.1 hardening, 2026-07-21).
+# Reads the ref updates from stdin (git pre-push contract: "<local_ref> <local_sha>
+# <remote_ref> <remote_sha>" per line) and runs metric_honesty on every md/json file
+# actually contained in the push, then the structural guards. ANY guard failure blocks.
+#
+# Fixes two bugs found in audit:
+#   1. old version diffed the index (`--cached`), which is empty at push time — the
+#      metric-honesty gate effectively never scanned anything;
+#   2. `[ -n "$MD" ] && guard ... || true` swallowed guard FAILURES — fail-open.
+set -euo pipefail
 ROOT="$(git rev-parse --show-toplevel)"
-MD=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(md|json)$' || true)
-[ -n "$MD" ] && python3 "$ROOT/scripts/guards/metric_honesty.py" --require-cross-generator $MD || true
+ZERO=0000000000000000000000000000000000000000
+
+CHANGED=""
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+  [ "$local_sha" = "$ZERO" ] && continue   # branch deletion — nothing to scan
+  if [ "$remote_sha" = "$ZERO" ]; then
+    # New remote branch: scan every commit not already on any remote.
+    COMMITS="$(git rev-list "$local_sha" --not --remotes 2>/dev/null || git rev-list "$local_sha")"
+    if [ -n "$COMMITS" ]; then
+      CHANGED="${CHANGED}
+$(printf '%s\n' "$COMMITS" | xargs -r git diff-tree --no-commit-id --name-only -r --root --diff-filter=ACM)"
+    fi
+  else
+    CHANGED="${CHANGED}
+$(git diff --name-only --diff-filter=ACM "$remote_sha".."$local_sha")"
+  fi
+done
+
+# md/json files in the push that still exist in the working tree (deleted-later files skipped).
+# ALLOWLIST ESTREITA (T-FIX-05, ADR-0010 + aprovado do lead 2026-08-13): os fixtures de guard sob
+# `tests/fixtures/` são relatórios DESONESTOS-POR-DESIGN (entradas de teste do metric_honesty) — o
+# gate os flagaria e bloquearia todo push. Excluímos SÓ esse prefixo, não alargamos PEDAGOGICAL_PREFIXES
+# nem tocamos guard nenhum. Precedente: no_raw_biometric exclui a própria pasta scripts/guards/;
+# framework_selfcheck exclui os próprios fixtures.
+MD=""
+while IFS= read -r f; do
+  [ -n "$f" ] && [ -f "$ROOT/$f" ] && case "$f" in
+    tests/fixtures/*) : ;;                                  # allowlist estreita (T-FIX-05)
+    *.md|*.json) MD="${MD}${f}
+";;
+  esac
+done <<EOF_FILES
+$(printf '%s\n' "$CHANGED" | sed '/^$/d' | sort -u)
+EOF_FILES
+
+if [ -n "$MD" ]; then
+  # NUL-safe hand-off (filenames with spaces); failure here BLOCKS the push (no || true).
+  printf '%s' "$MD" | tr '\n' '\0' | xargs -0 -r python3 "$ROOT/scripts/guards/metric_honesty.py" --require-cross-generator
+fi
 python3 "$ROOT/scripts/guards/index_drift.py"
+python3 "$ROOT/scripts/guards/framework_selfcheck.py"
 echo "pre-push gates: OK"

@@ -3,7 +3,10 @@
 inline numeric thresholds and `or <default>` patterns on sensitive names. Exit 1 = BLOCK."""
 import sys, re
 from pathlib import Path
-SENSITIVE = re.compile(r"(threshold|fpr|cutoff|score|model_path|fpr_target)\s*=\s*(0?\.\d+|\d+)\b", re.I)
+# Flag a bare hardcoded CONSTANT (e.g. `threshold = 0.5`), NOT a literal used inside arithmetic
+# (e.g. `trust_score = 1.0 - artifact_score` — a probability complement, not a tunable). The number
+# must be the COMPLETE assigned value (optionally followed by a comment), so anchor it to end-of-line.
+SENSITIVE = re.compile(r"(threshold|fpr|cutoff|score|model_path|fpr_target)\s*=\s*(0?\.\d+|\d+)\s*(#.*)?$", re.I)
 OR_DEFAULT = re.compile(r"(threshold|fpr|cutoff|model_path)\s*(=|or)\s*['\"0-9]", re.I)
 ALLOW = re.compile(r"(config|settings|enum|Field\(|pydantic|test_)", re.I)
 

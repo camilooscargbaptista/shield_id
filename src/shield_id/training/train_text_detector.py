@@ -7,7 +7,7 @@ the held-out generator + control set for the INDEPENDENT evaluator to certify (M
 This BUILDER reports NO accuracy/latency number (rule 15). It prints training progress only and writes
 artifacts; `eval-independent` (verify_eval) computes the cross-generator + fairness verdict separately.
 """
-import argparse, json, os
+import argparse, hashlib, json, os
 from typing import List, Dict
 from ..layers.layer1_detection.config import TextDetectorConfig
 from ..layers.layer1_detection.text_detector import TextForgeryDetector
@@ -18,13 +18,42 @@ def load_jsonl(path: str) -> List[dict]:
         return [json.loads(l) for l in f if l.strip()]
 
 
+def _control_bucket(text: str) -> float:
+    """Bucket determinístico em [0,1) derivado de sha256(text) — estável entre execuções e máquinas
+    (rule 07: sem RNG). Usado para particionar os controles de forma reproduzível."""
+    digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    return int(digest[:16], 16) / float(1 << 64)
+
+
+def _split_controls(controls: List[dict], fraction: float):
+    """Particiona os controles (label==0) em subconjuntos DISJUNTOS (train, held-out) por sha256(text)
+    (rule 07: determinístico, sem RNG). Um controle atribuído ao treino nunca aparece no held-out —
+    assim o FPR cross-generator jamais é medido sobre negativos já vistos no treino (I4/D8)."""
+    train_c = [r for r in controls if _control_bucket(r["text"]) < fraction]
+    heldout_c = [r for r in controls if _control_bucket(r["text"]) >= fraction]
+    return train_c, heldout_c
+
+
 def split_cross_generator(rows: List[dict], cfg: TextDetectorConfig):
-    """Train on cfg.train_generators (+ human control); hold out cfg.held_out_generator entirely (I4/D8)."""
+    """Treina nos ataques de cfg.train_generators (+ um shard DISJUNTO de controle); segura os ataques
+    de cfg.held_out_generator (+ o shard de controle complementar) inteiros (I4/D8). Os controles são
+    divididos deterministicamente por hash, então nenhum negativo é compartilhado entre os dois lados."""
     if cfg.held_out_generator in cfg.train_generators:
         raise ValueError("held_out_generator is in train_generators — circularity (rule 05/I4). Refusing.")
-    control = [r for r in rows if r["label"] == 0]
-    train = [r for r in rows if r.get("generator") in cfg.train_generators] + control
-    heldout = [r for r in rows if r.get("generator") == cfg.held_out_generator] + control
+    controls = [r for r in rows if r["label"] == 0]
+    train_c, heldout_c = _split_controls(controls, cfg.control_train_fraction)
+    train_attacks = [r for r in rows if r["label"] == 1 and r.get("generator") in cfg.train_generators]
+    heldout_attacks = [r for r in rows if r["label"] == 1 and r.get("generator") == cfg.held_out_generator]
+    train = train_attacks + train_c
+    heldout = heldout_attacks + heldout_c
+    # Verificação defensiva (I4/D8): os textos de train e held-out precisam ser DISJUNTOS. Se algum
+    # texto aparecer nos dois lados, a medição cross-generator está contaminada — recusar, não reportar.
+    overlap = {r["text"] for r in train} & {r["text"] for r in heldout}
+    if overlap:
+        raise ValueError(
+            f"train/held-out share {len(overlap)} text(s) — control leakage violates cross-generator "
+            f"isolation (rule 05/I4/D8). Refusing to produce a contaminated split."
+        )
     return train, heldout
 
 

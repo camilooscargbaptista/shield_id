@@ -22,6 +22,7 @@ agent_card:
   id: kebab-case-id            # unique; matches the filename
   name: HUMAN NAME
   role: coordination | builder | validation | audit | governance | policy
+  kind: process | prompt-module # process = spawned as its OWN isolated session; prompt-module = a persona composed INTO a session, not independently spawned. ORTHOGONAL to can_write_code.
   can_write_code: true|false   # validators/auditors/coordination MUST be false (M5)
   capabilities: [ verb-noun ... ]   # what it can DO (used for routing match)
   inputs: [ artifact ... ]          # what it consumes (paths/types)
@@ -62,6 +63,14 @@ The single most important property the schema enforces: **`can_write_code: false
 audit role.** This makes M5 (who builds does not validate) a *capability-level* fact, not a request the
 agent might forget. A validator literally has no tool to edit the thing it judges.
 
+**`kind` is ORTHOGONAL to `can_write_code`.** `kind: process` means the agent is spawned as its **own
+isolated session** (the independent evaluator, `eval-independent`, is the only `process` today — its
+isolation is *the* reason its numbers are credible, D4/M5). `kind: prompt-module` means the agent is a
+persona **composed into** an existing session (the orchestrator and the 7 other roles), never spawned
+independently. A `process` may still be `can_write_code: false` — `eval-independent` is `process` AND
+read-only. The taxonomy is enforced by `scripts/guards/framework_selfcheck.py` (every card must declare
+one of the two).
+
 | Builders (can_write_code: true) | Validators/auditors (false) |
 |----|----|
 | detection-ml, data-redteam, aita-policy | eval-independent, fairness-auditor, security-auditor, privacy-ethics-review, learning-curator, orchestrator |
@@ -83,9 +92,12 @@ agent might forget. A validator literally has no tool to edit the thing it judge
 4. Define `artifact_path`. 5. Confirm the orchestrator can route to it (a keyword maps to a capability).
 6. `version`/`next_review` per rule 28; a role change (e.g. flipping `can_write_code`) is a **major** bump → ADR.
 
-## 8. Validation (what `index_drift.py` + review checks)
+## 8. Validation (what `index_drift.py` + `framework_selfcheck.py` + review checks)
 - Every `agents/*.md` is referenced in INDEX. - Every validator has `can_write_code: false`.
 - Every card has `depends_on` (even if `[]`). - Every `delegates_to` target exists as a card.
+- **Every card declares `kind: process | prompt-module`** (mandatory; `framework_selfcheck.py` §B).
+- The invariant→guard map, single-reviewer path, DAG integrity and label honesty are all asserted
+  fail-closed by `scripts/guards/framework_selfcheck.py` (pre-push + CI).
 
 ## 9. Anti-patterns
 - ❌ A validator with `can_write_code: true` (breaks M5). ❌ An agent that spawns peers directly

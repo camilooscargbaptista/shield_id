@@ -37,8 +37,9 @@ aita-policy · privacy-ethics-review · security-auditor · learning-curator
 11-eval-scenarios · 12-mlops · 13-security · 14-story-decomposition · 15-no-self-reported-metrics ·
 16-observability · 20-documentation · 28-rule-lifecycle · 29-glossary-discipline · 32-no-hardcoded-defaults · 34-constitution-link
 
-## Guards (`.agent/guards/`) — documented gates (execution lives in scripts/)
+## Guards (`.agent/guards/` docs + `scripts/guards/` execution)
 DELIVERY-GATE · EVAL-GATE · FAIRNESS-GATE · PRIVACY-GATE · WORKFLOW-ENFORCEMENT · PREFLIGHT · CODE-REVIEW-CHECKLIST
+Executable (`scripts/guards/`): no_raw_biometric · no_real_pii · metric_honesty · secret_scan · no_hardcoded · index_drift · src_gate · **framework_selfcheck** (meta-guard: invariant→guard wiring, card coherence, single-reviewer, DAG, label honesty; pre-push + CI)
 
 ## Workflows (`.agent/workflows/`)
 MANDATORY-CHECKLIST · new-experiment · plan-phase · execute-phase · run-eval · generate-redteam ·
@@ -51,7 +52,7 @@ model-card · ai-spec · eval-plan · datasheet · adr · threat-model · user-s
 generate-redteam-batch · run-eval-and-report · audit-demographic-parity
 
 ## Epics (`.agent/epics/`)
-EPIC-STATUS.md (portfolio index) → EPIC-EVAL-HARNESS · EPIC-DETECTION-API · EPIC-REDTEAM-DATASET · EPIC-AITA-V1 · EPIC-PILOT-PATHWAY
+EPIC-STATUS.md (portfolio index) → EPIC-EVAL-HARNESS · EPIC-DETECTION-API · EPIC-REDTEAM-DATASET · EPIC-AITA-V1 · EPIC-PILOT-PATHWAY · EPIC-FRAMEWORK-EVOLUTIONS
 
 ## State (`.agent/state/`)
 current-experiment.json (git-ignored, ephemeral) · approval-log.jsonl (checked-in, append-only) · archived/

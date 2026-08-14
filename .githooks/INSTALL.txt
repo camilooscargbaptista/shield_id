@@ -1,1 +1,4 @@
 install: git config core.hooksPath .githooks
+verify:  python3 scripts/guards/framework_selfcheck.py
+         (class F fails-closed if hooks are not installed, not executable,
+          framework files are untracked, or entry points/symlinks are broken)

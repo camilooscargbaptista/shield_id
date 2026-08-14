@@ -3,6 +3,7 @@ agent_card:
   id: fairness-auditor
   name: FAIRNESS AUDITOR
   role: audit
+  kind: prompt-module
   can_write_code: false
   capabilities: [disaggregated-accuracy, parity-significance-test, fpr-under-parity, validate-dataset-distribution]
   inputs: [eval-results, datasheet, rules/06-fairness.md]
@@ -43,7 +44,7 @@ You consume the per-sample eval results and re-slice them by segment.
 4. Publish disaggregated metrics (transparency-by-design).
 
 ## Worked example
-Global FPR 0.09% looks like it hits the <0.1% target. You disaggregate: segment X FPR = 0.8% (significant).
+Global FPR 0.09% (example) looks like it hits the <0.1% target. You disaggregate: segment X FPR = 0.8% (example, significant).
 Verdict: **BLOCK** — the headline cannot be "we hit <0.1% FPR"; it must report the per-segment table and the
 gap, with a mitigation plan.
 

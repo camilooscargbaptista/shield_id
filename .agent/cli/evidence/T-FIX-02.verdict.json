@@ -1,0 +1,11 @@
+{"task": "T-FIX-02", "verdict": "PASS_WITH_WARNINGS",
+ "checks": {"reproduced_independently": true, "bidirectional_proof": true,
+            "scope_respected": true, "no_test_theater": true},
+ "findings": [
+   "Prova bidirecional reproduzida: experiment_defect.md → exit 1 nomeando circularidade (kill-list #1) + threshold-sweep (kill-list #4) + métrica sem evidência; eval_report_clean.md (com 'NOT tuned' e 'target' adjacente) → exit 0. Os 5 fixtures novos com exit codes corretos.",
+   "PEDAGOGICAL_PREFIXES e janela de 12 chars INTACTOS (verificado no fonte). Fail-closed em erro de leitura/parse implementado (linhas 115/155).",
+   "Design elegante: circularidade declarada também invalida has_cross — o número deixa de contar como cross-generator.",
+   "WARNING 1 (operacional, decisão do lead): o push da branch SERÁ BLOQUEADO pelo pre-push — os fixtures desonestos-por-design estão no range (confirmado por simulação: exit 1 com 7 achados, todos em tests/fixtures/guards/). T-FIX-05 registrado corretamente no CONTROL. Recomendação do Oráculo: allowlist estreita por prefixo 'tests/fixtures/' no pre-push (precedente: no_raw_biometric exclui a própria pasta guards; o selfcheck exclui os próprios fixtures) — NÃO alargar isenção pedagógica.",
+   "WARNING 2 (menor): TRAIN_GENS_RE só captura lista em linha única — uma lista multi-linha escapa do check determinístico de circularidade. Cobertura permanece via revisor LLM (verify_eval) e ValueError em runtime. Registrar como hardening futuro, não bloqueia.",
+   "WARNING 3 (ratificação pendente do lead): escopo dos 2 checks estruturais fora de .py — racional sólido (4 FPs verificados: kill-list descritiva, regex do próprio guard, teste negativo; circularidade real pega em runtime; pre-push só varre .md/.json). Oráculo recomenda ACEITAR. Vetor residual teórico: relatório desonesto salvo como .py escaparia dos checks estruturais — mas não do verify_eval."],
+ "reviewed_at": "2026-08-13T22:30:00Z"}

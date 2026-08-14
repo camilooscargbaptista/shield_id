@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 # Versão da lib pinada para reprodutibilidade (rule 02). Verificada em runtime.
+# mini-SSOT: DEVE bater com `datasets==4.5.0` em requirements-gpu.txt (o único outro lugar do pin).
 PINNED_DATASETS_VERSION = "4.5.0"
 
 # Token humano do RAID (a coluna `model` usa esta string para texto humano).

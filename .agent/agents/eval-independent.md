@@ -3,6 +3,7 @@ agent_card:
   id: eval-independent
   name: INDEPENDENT EVALUATOR
   role: validation
+  kind: process
   can_write_code: false
   capabilities: [run-eval-harness, cross-generator-protocol, verify-reproducibility, falsify-summary, emit-verdict]
   inputs: [eval-plan, model-card, held-out-splits, notebook, seed, data-manifest]

@@ -1,0 +1,9 @@
+{"task": "T-FIX-01", "verdict": "PASS",
+ "checks": {"reproduced_independently": true, "bidirectional_proof": true,
+            "scope_respected": true, "no_test_theater": true},
+ "findings": [
+   "Reproduzido com dataset sintético próprio do Oráculo: interseção train∩heldout = 0; zero ataques gpt4 no treino; determinismo confirmado inclusive com ordem embaralhada (hash, não RNG — rule 07).",
+   "Verificação defensiva confirmada adversarialmente: forja com texto do lado do treino duplicado como ataque held-out → ValueError nomeando I4. (Nota de método: forja com duplicata no MESMO lado corretamente NÃO dispara — não há vazamento nesse caso.)",
+   "redteam._shard_controls: shards disjuntos e cobertura total confirmados por execução (500/ger, seed 42).",
+   "Notebook Colab atualizado no mesmo commit (célula do split)."],
+ "reviewed_at": "2026-08-13T22:30:00Z"}

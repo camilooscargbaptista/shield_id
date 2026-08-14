@@ -29,6 +29,7 @@ description: Authority map. Each topic has exactly ONE owner file. All others LI
 | Architecture (C4) | `.context/ARCHITECTURE.md` | link only |
 | Domain glossary | `.context/GLOSSARY.md` | link only |
 | Hooks (REAL execution) | `scripts/` + `.claude/hooks/` | `.agent/hooks/*.md` describe intent only |
+| Framework structural coherence (invariant→guard map, card `kind`, single-reviewer, DAG) | `scripts/guards/framework_selfcheck.py` | link only |
 | Epic portfolio status | `.agent/epics/EPIC-STATUS.md` | link only |
 
 **Rule:** if you find yourself copying content, stop and link to the owner instead.

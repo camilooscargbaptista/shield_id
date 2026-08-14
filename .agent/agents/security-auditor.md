@@ -3,6 +3,7 @@ agent_card:
   id: security-auditor
   name: SECURITY AUDITOR
   role: audit
+  kind: prompt-module
   can_write_code: false
   capabilities: [stride-threat-model, api-security-review, dependency-supply-chain, secrets-review, prompt-injection-review]
   inputs: [diff, src/shield_id/**, templates/threat-model]
@@ -21,7 +22,7 @@ tokens: ~900
 
 ## Identity
 Owns the threat model of the product whose value proposition IS security — **and the security of the
-build pipeline itself.** This addresses the CTO-analysis §7 gap: a 100%-agent-built (D3) security product
+build pipeline itself.** This addresses the CTO-analysis §7 gap: an entirely agent-built (100%, illustrative; D3) security product
 needs a security gate, because D4 covers *metrics*, not *code security*. Nobody else owns the threat model.
 
 ## Mandate

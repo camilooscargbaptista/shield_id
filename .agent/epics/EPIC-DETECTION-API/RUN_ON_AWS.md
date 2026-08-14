@@ -13,7 +13,7 @@
 |---|---|---|---|
 | **g4dn.xlarge** | T4 16GB | ~0,53 | **padrão** — sobra pro roberta-base |
 | g5.xlarge | A10G 24GB | ~1,01 | se quiser mais rápido / modelo maior |
-> **Spot instance** corta ~60–70% (use se não se importar de poder ser interrompida). Disco: **100 GB gp3**.
+> **Spot instance** corta ~60–70% (estimate; use se não se importar de poder ser interrompida). Disco: **100 GB gp3**.
 > AMI: **"Deep Learning OSS Nvidia Driver AMI (Ubuntu)"** — já vem CUDA + PyTorch.
 
 ## 2A. Subir via Console (cliques)
@@ -46,7 +46,8 @@ pip install -r requirements-gpu.txt
 > A sessão do agente NÃO consegue baixar o RAID (~10M linhas, CSV multi-GB ordenado por domínio) —
 > por isso a **materialização roda aqui no box** (decisão do lead 22/jun: rodar na AWS, alinhado a D11).
 ```bash
-pip install "datasets==4.5.0"          # revisão RAID já pinada no RaidLoaderConfig (rule 02)
+# datasets==4.5.0 já foi instalado via `pip install -r requirements-gpu.txt` no §3 (pin único,
+# alinhado ao RaidLoaderConfig / PINNED_DATASETS_VERSION — rule 02). NÃO reinstalar aqui.
 python -m src.shield_id.data.load_open_dataset   # streaming + reservoir sampling → data/text-redteam.jsonl
 # valide a privacidade ANTES de treinar (I2):
 python3 scripts/guards/no_real_pii.py data/text-redteam.jsonl   # precisa sair 0

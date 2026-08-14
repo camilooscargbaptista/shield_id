@@ -9,7 +9,7 @@ profiles) — clearly NOT diffusion/LLM/TTS deepfakes. Its purpose is to exercis
 Invariants honored: synthetic-only, NO real PII (I2); cross-generator splits by construction (I4/D8);
 documents-first (D9); datasheet with validated demographic distribution (rule 03/06). stdlib-only.
 """
-import random, json
+import random, json, hashlib
 from dataclasses import dataclass, field, asdict
 from typing import List, Dict
 
@@ -65,15 +65,31 @@ def validate_demographics(samples: List[Sample]) -> Dict[str, dict]:
         out[seg] = {"count": n, "share": round(n / total, 4) if total else 0.0}
     return out
 
+def _shard_controls(controls: List[Sample], groups: List[str]) -> Dict[str, List[Sample]]:
+    """Particiona os controles (label==0) em shards DISJUNTOS, um por grupo de gerador, por
+    sha256(sample_id) (rule 07: determinístico, sem RNG). Cada controle cai em exatamente UM grupo,
+    então nenhum negativo é compartilhado entre grupos (sem vazamento) e os controles não são
+    contados em dobro no pool in-distribution."""
+    shards: Dict[str, List[Sample]] = {g: [] for g in groups}
+    n = len(groups)
+    for s in controls:
+        idx = int(hashlib.sha256(s.sample_id.encode("utf-8")).hexdigest()[:16], 16) % n
+        shards[groups[idx]].append(s)
+    return shards
+
+
 def split_for_cross_generator(samples: List[Sample], train_generators: List[str], held_out: str):
-    """Build the cross-generator eval inputs: pooled train {A,B} + control vs held-out C + control.
-    Returns (scores_by_gen, labels_by_gen) consumable by eval.cross_generator (I4/D8)."""
+    """Build the cross-generator eval inputs: cada gerador de treino {A,B} e o held-out C recebe seu
+    PRÓPRIO shard disjunto de controle (I4/D8). Dividir os controles em shards por gerador elimina o
+    vazamento anterior (os mesmos controles em todos os grupos) E a dupla contagem dos controles no
+    pool in-distribution. Returns (scores_by_gen, labels_by_gen) consumable by eval.cross_generator."""
     if held_out in train_generators:
         raise ValueError(f"held_out '{held_out}' in train {train_generators} — circularity (rule 05/I4). Refusing.")
-    controls = [s for s in samples if s.label == 0]
+    groups = train_generators + [held_out]
+    control_shards = _shard_controls([s for s in samples if s.label == 0], groups)
     scores_by_gen, labels_by_gen = {}, {}
-    for g in train_generators + [held_out]:
-        grp = [s for s in samples if s.generator == g] + controls
+    for g in groups:
+        grp = [s for s in samples if s.generator == g] + control_shards[g]
         scores_by_gen[g] = [baseline_score(s) for s in grp]
         labels_by_gen[g] = [s.label for s in grp]
     return scores_by_gen, labels_by_gen

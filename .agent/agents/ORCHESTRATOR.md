@@ -3,6 +3,7 @@ agent_card:
   id: orchestrator
   name: ORCHESTRATOR
   role: coordination
+  kind: prompt-module
   can_write_code: false
   capabilities: [decompose-request, interrogate, route-to-agents, consolidate, gate-on-approval, goal-backward-plan, verify-goal, resolve-conflicts]
   inputs: [human-request, epic, user-story, .context/analysis/*]
