@@ -22,7 +22,7 @@
 | T-ADR-01 | ADR (rule-28) das mudanças em guards CRÍTICOS (jun+jul+esta sprint) + lições LC | governança | **READY_FOR_ORACULO** (ADR-0010 criado em `../../docs/06-governance/adr/`; índice + LC-005/006 + METRICS atualizados) | `.agent/cli/tasks/T-ADR-01-guards-adr.task.md` |
 | T-TRAIN-01 | Treinar na AWS g4dn + certificar (eval-independent) | DETECTION/US-007 | bloqueado (só falta T-DATA-01 data-gen no box) | `RUN_ON_AWS.md` |
 | T-US008-01 | Layer 2 comportamental (especificada/simulada — D7) | DETECTION/US-008 | pendente | (criar) |
-| T-FIX-05 | **(proposta, descoberta em T-FIX-02)** Mecanismo estreito e honesto p/ isentar fixtures-de-guard declarados (`tests/fixtures/guards/*_defect.md`, `tests/fixtures/port2/experiment_defect.md`) do gate **pre-push** `metric_honesty` — esses fixtures têm conteúdo desonesto POR DESIGN e bloqueariam um `git push`. Opções p/ o lead: allowlist explícita de caminhos de fixture no pre-push OU relocar fixtures — **SEM alargar a isenção pedagógica `.agent/`/`.context/`**. Não consertado nesta sprint (M4 escopo; tocar hooks = STOP). | governança/tech-debt | proposta (lead decide) | (criar) |
+| T-FIX-05 | Allowlist estreita de `tests/fixtures/` no gate **pre-push** `metric_honesty` (os fixtures-de-guard são desonestos por design e bloqueariam o push) — **autorizada pelo lead 2026-08-13** (STOP de hooks suspenso só p/ esta task) | governança/EPIC-FRAMEWORK-EVOLUTIONS | **READY_FOR_ORACULO** (prova bidirecional; `PEDAGOGICAL_PREFIXES` e `metric_honesty` intactos) | `.agent/cli/tasks/T-FIX-05-fixture-allowlist.task.md` |
 
 ## Inputs/decisões abertas (do lead)
 - Data **oficial** do M1 (hoje provisória jun/2026).
@@ -31,6 +31,7 @@
 - **Verificar no box:** após gerar o JSONL, se algum gerador do split (`chatgpt`/`gpt4`) não aparecer na amostra alcançável, ajustar `EvalConfig` para geradores presentes (o RAID completo tem os 11 → deve funcionar).
 
 ## Log (append no TOPO — data · o que · status)
+- 2026-08-14 · **T-FIX-05** (allowlist estreita `tests/fixtures/` no pre-push — autorizada pelo lead): os fixtures de defeito do `metric_honesty` são `.md` desonestos por design e bloqueavam o `git push` (gate pre-push varre `.md`/`.json`). `.githooks/pre-push` passa a excluir SÓ o prefixo `tests/fixtures/` da lista MD (allowlist estreita, comentada, citando ADR-0010; `PEDAGOGICAL_PREFIXES` e `metric_honesty.py` INTACTOS). Prova bidirecional com o HOOK REAL (stdin do git): (a) `d9d0130..HEAD`→exit 0; (b) `.md` desonesto FORA de `tests/fixtures/` no range→exit 1 (removido). `pytest`→42 passed. Bundle: `.agent/cli/evidence/T-FIX-05.md`. **Estado: `READY_FOR_ORACULO`.** · READY_FOR_ORACULO
 - 2026-08-13 · **✅ SPRINT HARDENING-PRE-TRAINING — FECHAMENTO (dev).** 5 tasks concluídas na branch `exp/hardening-pre-training` (base `d9d0130`), cada uma `READY_FOR_ORACULO` com evidence bundle. NÃO mergeada — aguarda veredito do Oráculo EXTERNO + `/approved` do lead (M5). Commits (1 scaffolding + 5 task):
   - `de61a91` scaffolding (orchestrator + protocolo Oráculo + 5 task files)
   - `c3a5baa` **T-FIX-01** split de controle disjunto → bundle `evidence/T-FIX-01.md`

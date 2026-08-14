@@ -29,10 +29,18 @@ $(git diff --name-only --diff-filter=ACM "$remote_sha".."$local_sha")"
 done
 
 # md/json files in the push that still exist in the working tree (deleted-later files skipped).
+# ALLOWLIST ESTREITA (T-FIX-05, ADR-0010 + aprovado do lead 2026-08-13): os fixtures de guard sob
+# `tests/fixtures/` são relatórios DESONESTOS-POR-DESIGN (entradas de teste do metric_honesty) — o
+# gate os flagaria e bloquearia todo push. Excluímos SÓ esse prefixo, não alargamos PEDAGOGICAL_PREFIXES
+# nem tocamos guard nenhum. Precedente: no_raw_biometric exclui a própria pasta scripts/guards/;
+# framework_selfcheck exclui os próprios fixtures.
 MD=""
 while IFS= read -r f; do
-  [ -n "$f" ] && [ -f "$ROOT/$f" ] && case "$f" in *.md|*.json) MD="${MD}${f}
-";; esac
+  [ -n "$f" ] && [ -f "$ROOT/$f" ] && case "$f" in
+    tests/fixtures/*) : ;;                                  # allowlist estreita (T-FIX-05)
+    *.md|*.json) MD="${MD}${f}
+";;
+  esac
 done <<EOF_FILES
 $(printf '%s\n' "$CHANGED" | sed '/^$/d' | sort -u)
 EOF_FILES
