@@ -1,0 +1,8 @@
+{"task": "T-FIX-04", "verdict": "PASS",
+ "checks": {"reproduced_independently": true, "bidirectional_proof": true,
+            "scope_respected": true, "no_test_theater": true},
+ "findings": [
+   "Zero '>=' no arquivo (verificado); datasets==4.5.0 pinado e batendo com PINNED_DATASETS_VERSION do loader com comentário cruzado nos DOIS pontos; RUN_ON_AWS §3.5 agora instala via requirements (pin único).",
+   "Observação (não bloqueia): resolução feita em macOS/Python 3.9.6; a GPU box (Linux/CUDA, Python provavelmente 3.10+) pode resolver dependências transitivas diferentes. Os pins diretos são explícitos e a instalação falha ALTO em conflito — comportamento fail-closed aceitável. Se houver conflito na box, re-freeze lá e atualizar o arquivo com novo bundle.",
+   "Instrução CUDA correta: mesma versão, wheel de índice CUDA."],
+ "reviewed_at": "2026-08-13T22:30:00Z"}

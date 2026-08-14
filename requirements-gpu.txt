@@ -1,7 +1,22 @@
-# Layer-1 text detector — install on the GPU box (CUDA). Pin versions in your environment.
-torch>=2.2
-transformers>=4.40
-datasets>=2.19
-scikit-learn>=1.4
-accelerate>=0.30
-numpy>=1.26
+# SHIELD-ID Layer-1 text detector — dependências da GPU box (CUDA). rules 02/13 (supply-chain).
+#
+# TODAS as versões PINADAS com `==` (nenhum intervalo de versão neste arquivo). Foram resolvidas
+# num venv LIMPO em 2026-08-13 (Python 3.9.6, macOS arm64) a partir dos mínimos anteriores
+# (torch 2.2, transformers 4.40, scikit-learn 1.4, accelerate 0.30, numpy 1.26) + datasets 4.5.0,
+# seguido de `pip freeze`. O comando exato de resolução e o freeze completo estão no evidence
+# bundle T-FIX-04. A GPU box DEVE instalar EXATAMENTE estas versões — os números de versão são
+# independentes de plataforma; só o build do wheel muda.
+#
+# CUDA wheels (torch): na box Linux+CUDA, instale o torch da MESMA versão a partir do índice CUDA,
+# ex.:  pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cu121
+# (ajuste cuXXX à CUDA da g4dn). NÃO troque o número da versão — só a origem do wheel.
+
+# datasets: mini-SSOT com src/shield_id/data/load_open_dataset.py::PINNED_DATASETS_VERSION.
+# O loader ABORTA em runtime se datasets.__version__ != 4.5.0 — este pin DEVE bater com aquele.
+datasets==4.5.0
+
+torch==2.8.0
+transformers==4.57.6
+scikit-learn==1.6.1
+accelerate==1.10.1
+numpy==2.0.2

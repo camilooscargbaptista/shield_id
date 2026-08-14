@@ -13,6 +13,11 @@ class TextDetectorConfig:
     seed: int = 42
     decision_threshold: float = 0.5           # operating cutoff (D5: a target to TEST)
     fpr_target: float = 0.001                 # rule 06: protect access
+    # rule 32: fração determinística dos CONTROLES (label=0) que vai para o TREINO; o restante vai
+    # para o held-out. O split é feito por sha256(text) (rule 07: sem RNG — estável entre execuções
+    # e máquinas), garantindo que NENHUM negativo apareça no treino E no held-out ao mesmo tempo.
+    # Sem isso, o FPR cross-generator seria medido sobre negativos já vistos no treino (I4/D8).
+    control_train_fraction: float = 0.7
     # cross-generator (I4/D8): which LLM "generators" train vs held-out.
     # SSOT: estes nomes são REAIS do RAID (liamdugan/raid) e DEVEM ficar em sincronia
     # com config.py::EvalConfig e data/load_open_dataset.py::RaidLoaderConfig. Os
