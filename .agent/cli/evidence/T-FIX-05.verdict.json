@@ -1,0 +1,11 @@
+{"task": "T-FIX-05", "verdict": "PASS_WITH_WARNINGS",
+ "checks": {"reproduced_independently": true, "bidirectional_proof": true,
+            "scope_respected": true, "no_test_theater": true},
+ "findings": [
+   "Diff do hook verificado linha a linha: allowlist SÓ para prefixo tests/fixtures/, comentada citando ADR-0010 + aprovado do lead. PEDAGOGICAL_PREFIXES e guards intactos. Escopo do commit 2c13d62 = 4 arquivos, todos autorizados.",
+   "Prova bidirecional reproduzida pelo Oráculo: (a) hook REAL via contrato stdin contra o range d9d0130..HEAD → exit 0 (metric_honesty/index_drift/selfcheck OK); (b) lógica de montagem da lista MD com .md desonesto plantado FORA de fixtures → arquivo INCLUÍDO na lista e bloqueado pelo guard (exit 1), fixture corretamente excluído. Suíte 42 passed.",
+   "approval-log auditado: step_approved implementation (camilo, 2026-08-14T01:25:51Z) presente; current_step segue em data — coerente com a realidade (T-DATA-01 pendente).",
+   "WARNING (rule 08): 1 entrada bypass_used --no-verify no approval-log, oriunda de temp-commits descartáveis do harness de teste do dev (auto-reportada, log append-only preservado, commits reais todos passaram pre-commit — verificado). Sem impacto nos deliverables, mas rule 08 diz NUNCA: registrar LC-007 ('prova de hook se faz com stdin-contract ou worktree descartável, não com --no-verify') no fechamento.",
+   "Recomendação sobre squash: MANTER os 11 commits (M6 é micro-commit rastreável; squash apagaria a trilha task→commit que os bundles citam).",
+   "Nota operacional: a reexecução do Oráculo no sandbox deixou 3 untracked que o mount não permite apagar daqui: relatorio_desonesto.md (plantado da prova b) e scripts/guards/_selfcheck_*.md (fixtures que o selfcheck não conseguiu apagar no finally pela mesma permissão). Lead deve removê-los no Mac antes do merge (senão selfcheck F2 acusa)."],
+ "reviewed_at": "2026-08-14T02:05:00Z"}
