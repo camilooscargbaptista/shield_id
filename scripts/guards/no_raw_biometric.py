@@ -38,7 +38,22 @@ def scan(files):
     return hits
 
 def main():
-    files = sys.argv[1:] or [str(p) for p in Path("src").rglob("*.py")] if Path("src").exists() else []
+    args = sys.argv[1:]
+    # FIX (T-FIX-03): parentetiza o fallback. O bug de precedência anterior —
+    #   args or [glob] if Path("src").exists() else []
+    # é avaliado como  (args or [glob]) if Path("src").exists() else []  → de um cwd SEM src/,
+    # files=[] MESMO com arquivos passados por argumento → o guard não escaneava nada e saía 0
+    # (fail-OPEN de um invariante CRÍTICO, I1). no_hardcoded.py já estava correto (referência).
+    files = args or ([str(p) for p in Path("src").rglob("*.py")] if Path("src").exists() else [])
+    # Fail-closed na seleção: um caminho pedido explicitamente mas ausente NÃO pode ser ignorado em
+    # silêncio (esconderia um scan que o chamador pediu). Aviso no stderr; um arquivo inexistente não
+    # tem bytes a vazar, então o exit continua governado pelo scan dos arquivos que existem.
+    if args:
+        for f in args:
+            if not Path(f).is_file():
+                print(f"no_raw_biometric: WARNING — requested path not found, not scanned: {f}", file=sys.stderr)
+    elif not files:
+        print("no_raw_biometric: WARNING — no files passed and no src/ tree; nothing to scan.", file=sys.stderr)
     hits = scan(files)
     if hits:
         print("BLOCKED — I1 raw-biometric persistence (rule 04). Use derived feature vectors only:")
