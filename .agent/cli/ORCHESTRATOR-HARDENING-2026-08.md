@@ -52,4 +52,5 @@ status `READY_FOR_ORACULO`) → (g) próxima task.
 ## Ao final da sprint
 Resumo de ≤15 linhas no CONTROL.md (Log, topo) listando os 5 bundles + hashes dos commits.
 Estado final: branch `exp/hardening-pre-training` com 5 commits, NÃO mergeada, aguardando
-veredito do Oráculo + `/approved` do lead. Nada além disso.
+veredito do Oráculo + aprovação do lead (a palavra "aprovado" no prompt; registre-a via
+`python3 scripts/agent/approve.py <step>` para que o approval-log receba a entrada). Nada além disso.

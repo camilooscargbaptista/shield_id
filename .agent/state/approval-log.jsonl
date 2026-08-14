@@ -17,3 +17,4 @@
 {"ts":"2026-06-18T18:33:38Z","event":"epic_milestone","epic":"EPIC-REDTEAM-DATASET","detail":"pipeline+splits+datasheet+baseline built (procedural synthetic); WS-B loop end-to-end; guards green; 5/5 tests"}
 {"ts":"2026-06-23T00:02:38Z","event":"epic_milestone","epic":"EPIC-DETECTION-API","detail":"US-007 real LLM-text detector code written (transformers fine-tune); compiles; guards green; training pending GPU (D11)"}
 {"ts":"2026-06-23T00:22:07Z","event":"infra","detail":"CLI orchestration layer (.agent/cli CONTROL+tasks + .claude/commands orchestrate/next/status)"}
+{"ts": "2026-08-14T01:25:51Z", "event": "step_approved", "experiment": "port-framework-evolutions", "step": "implementation", "approver": "camilo"}

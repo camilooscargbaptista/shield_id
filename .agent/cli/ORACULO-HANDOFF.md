@@ -6,7 +6,8 @@
 - **Oráculo (validador):** sessão Cowork ISOLADA (contexto separado, sem acesso ao raciocínio do dev).
   Lê os bundles + o código real no working tree, reexecuta as provas de forma independente e emite
   veredito. Não escreve código de produto.
-- **Lead (Camilo):** único com poder de `/approved`, commit final na main e merge.
+- **Lead (Camilo):** único com poder de aprovação — sinaliza com a palavra **"aprovado"** no prompt;
+  o agente então registra via `python3 scripts/agent/approve.py <step>` (approval-log append-only).
 
 ## Evidence bundle (o dev escreve, por task)
 `.agent/cli/evidence/<TASK>.md` contendo, nesta ordem:
@@ -37,7 +38,7 @@ Regras do veredito (herdadas do `verify_eval.py` / tabela-verdade M5):
 
 ## Fluxo por task
 dev termina → `READY_FOR_ORACULO` no CONTROL → lead aciona o Oráculo na sessão Cowork →
-Oráculo reexecuta + veredito JSON → PASS → lead `/approved` + commit segue na branch ·
+Oráculo reexecuta + veredito JSON → PASS → lead diz "aprovado" (registrado via approve.py) + commit segue na branch ·
 FAIL → dev corrige na MESMA task (nova rodada, máx. 3; na 3ª falha → HALT e lead decide).
 
 ## Encerramento da sprint

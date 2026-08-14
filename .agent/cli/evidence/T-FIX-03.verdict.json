@@ -1,0 +1,8 @@
+{"task": "T-FIX-03", "verdict": "PASS",
+ "checks": {"reproduced_independently": true, "bidirectional_proof": true,
+            "scope_respected": true, "no_test_theater": true},
+ "findings": [
+   "Prova bidirecional reproduzida de /tmp (cwd sem src/): violação plantada por argumento → exit 1 nomeando I1/rule 04; limpo → exit 0. O fail-open original está fechado.",
+   "Arquivo inexistente por argumento → WARNING explícito + exit 0, conforme spec da task (no contexto real do pre-commit os paths vêm do git diff e existem).",
+   "Escopo respeitado: padrões de detecção intactos, só a seleção de arquivos mudou."],
+ "reviewed_at": "2026-08-13T22:30:00Z"}

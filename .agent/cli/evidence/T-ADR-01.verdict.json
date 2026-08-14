@@ -1,0 +1,8 @@
+{"task": "T-ADR-01", "verdict": "PASS",
+ "checks": {"reproduced_independently": true, "bidirectional_proof": true,
+            "scope_respected": true, "no_test_theater": true},
+ "findings": [
+   "ADR-0010 existe em docs/06-governance/adr/, segue o template, cobre os 4 blocos (jun/22 escopos, PORT-1.1 LC-004, T-FIX-02, T-FIX-03) e marca a QUESTION do bloco (d) para o lead — dívida de rule 28 de 22/jun quitada.",
+   "Índice ADR atualizado (linha 0010); LC-005 e LC-006 registradas sem colisão de numeração e com o formato lição→forcing-function; METRICS.md corrigido para 8 guards py / 6 epics.",
+   "Sobre a QUESTION do ADR (isenção pedagógica × epics/*/state/): recomendação do Oráculo = ACEITAR por ora (as certificações são emitidas pelo verify_eval isolado, que é o gate real) e REVISITAR quando os relatórios certificados passarem a viver em docs/reports/ (rule 15 SSOT)."],
+ "reviewed_at": "2026-08-13T22:30:00Z"}
